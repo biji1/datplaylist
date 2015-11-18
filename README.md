@@ -1,2 +1,2 @@
 # datplaylist
-Playing live string based playlist on youtube
+Playing live string based playlist on youtube.
