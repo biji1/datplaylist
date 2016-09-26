@@ -1,0 +1,114 @@
+<header class="sb-page-header title-top">
+    <div class="container">
+        <h1>Dat Playlist</h1>
+        <p class="lead">
+            Helps you to create string-based playlists without the constraint of keeping it up to date.<br />
+            Works with <strong>Google YouTube Search API</strong>.
+        </p>
+    </div>
+</header>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div id="alert-empty" class="alert alert-danger collapse alert-home">
+                The playlist you want to add is <strong>empty</strong>.
+            </div>
+            <div id="alert-incorrect" class="alert alert-danger collapse alert-home">
+                The captcha is <strong>incorrect</strong>.
+            </div>
+            <div id="alert-toobig" class="alert alert-danger collapse alert-home">
+                One of the input form is <strong>too big</strong>.
+            </div>
+            <!-- <div id="alert-added" class="alert alert-success collapse"> faire dans la page lists
+                The playlist has been added with <strong>success</strong>.
+            </div> -->
+            <div class="row">
+                <form id="index-form" action="verify" method="POST">
+                    
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <textarea name="area-playlist" id="area-playlist" maxlength="3000" class="form-control vresize" rows="7" placeholder="One query per line"><%= @previous_area %></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input name="author-playlist" type="text" class="form-control" placeholder="Author" aria-describedby="basic-addon1" value="<%= @previous_author %>" maxlength="100">
+                                <span class="input-group-addon" id="basic-addon1">Optional</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input name="description-playlist" type="text" class="form-control" placeholder="Description" aria-describedby="basic-addon1" value="<%= @previous_description %>" maxlength="100">
+                                <span class="input-group-addon" id="basic-addon2">Optional</span>
+                            </div>
+                        </div>
+                        <!--<%= recaptcha_tags %>-->
+                        <script src='https://www.google.com/recaptcha/api.js'></script>
+                        <div class="g-recaptcha" data-sitekey="6Le2XBETAAAAAO5SKz753f1Nf9fDoJghCerynbOh"></div>
+                        
+                        <div class="form-group">
+                            <button type="button" class="button-create btn btn-primary btn-lg">Create a playlist</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+
+        var playlist = {};
+
+        function getVideoIds() {
+            var lines = $("#area-playlist").val().split('\n');
+
+            lines = $.grep(lines, function(n) {
+                return (n)
+            });
+
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i]) {
+                    playlist[lines[i]] = "ok";
+                }
+            }
+        }
+
+        function checkPlaylist() {
+            if (Object.keys(playlist).length == 0)
+                return false;
+            return true;
+        }
+
+        $(".button-create").click(function(e) {
+            e.preventDefault();
+            playlist = {};
+            getVideoIds();
+            if (!checkPlaylist()) {
+                $("#alert-empty").fadeTo(2000, 500).slideUp(500, function(){
+                });
+                return;
+            }
+            $("#index-form").submit();
+        });
+
+        if (<%= @status %> == 3) {
+            $("#alert-empty").fadeTo(5000, 500).slideUp(500, function(){
+            });
+        }
+        else if (<%= @status %> == 4) {
+            $("#alert-incorrect").fadeTo(5000, 500).slideUp(500, function(){
+            });
+        }
+        else if (<%= @status %> == 5) {
+            $("#alert-toobig").fadeTo(5000, 500).slideUp(500, function(){
+            });
+        }
+
+    });
+</script>

@@ -1,0 +1,61 @@
+<div class="container-fluid">
+  <div class="row">
+<div class="col-md-8 left-play">
+  <h3 class="string-playlist"><%= @title %></h3>
+  <div id="player"></div>
+  <h2 class="yt-video-title"></h2>
+  <p class="lead">https://www.youtube.com/watch?v=<span class="yt-video-id"> loading...</span></p>
+    </div>
+    <div class="col-md-4 right-play">
+      <!--
+      <div class="ad-play">
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+        <!-- pub page play --><!--
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:320px;height:100px"
+             data-ad-client="ca-pub-8370488512195226"
+             data-ad-slot="1072411673"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+    -->
+      <div class="list-group playlist-videos">
+        <!-- tmp: decommenter la ligne 1 pour la version en ligne, la version 2 pour la version dans la vm -->
+        <% i = 1 %>
+        <% @mylisttitle.each_with_index do |title, index| %>
+          <% if i == @n %>
+            <!-- <a class="list-group-item active" href="/play/<%= @id %>/<%= index %>" onclick="loadUrl('http://<%= request.host %>/play/<%= @id %>/<%= index %>')"><h4><%= title %></h4></a> -->
+            <a class="list-group-item active" href="/play/<%= @id %>/<%= index %>"><h4><%= title %></h4></a>
+          <% else %>
+            <!-- <a class="list-group-item" href="/play/<%= @id %>/<%= index %>" onclick="loadUrl('http://<%= request.host %>/play/<%= @id %>/<%= index %>')"><h4><%= title %></h4></a> -->
+            <a class="list-group-item" href="/play/<%= @id %>/<%= index %>"><h4><%= title %></h4></a>
+          <% end %>
+          <% i += 1 %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/searchAndLoad.js"></script>
+<script>
+
+  // scroll to the elem active
+  $parentDiv = $(".playlist-videos");
+  $innerListItem = $(".playlist-videos .active");
+  $parentDiv.scrollTop($parentDiv.scrollTop() + $innerListItem.position().top
+    - $parentDiv.height()/2 + $innerListItem.height()/2);
+
+  function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {} else if (event.data == YT.PlayerState.ENDED) {
+          if ( <%= @end %> == 1) {
+              //la fin
+              //alert("this is the end");
+          } else {
+              loadUrl("http://" + window.location.host + "/play/<%= @id %>/<%= @n %>");
+          }
+      }
+  }
+
+</script>

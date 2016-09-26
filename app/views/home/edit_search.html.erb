@@ -1,0 +1,47 @@
+<div class="container-fluid">
+	<div class="row title-top3">
+		<h1>Enter the code of the playlist</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 search-zone">
+
+			<div id="alert-incorrect" class="alert alert-danger collapse alert-home">
+	            The code must be <strong>8</strong> characters.
+	        </div>
+
+			<form id="index-form" action="edit_search_verify" method="POST">
+				<div class="form-group">
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-4">
+							<div class="input-group">
+								<input id="area-code-playlist" name="code-playlist" type="text" maxlength="8" class="form-control" placeholder="Code" aria-describedby="basic-addon1" value="">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="button" class="button-search btn btn-primary btn-lg">Search</button>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+
+        $(".button-search").click(function(e) {
+            e.preventDefault();
+            var myLength = $("#area-code-playlist").val().length;
+            if (myLength != 8) {
+                $("#alert-incorrect").fadeTo(2000, 500).slideUp(500, function(){
+                });
+                return;
+            }
+            $("#index-form").submit();
+        });
+
+    });
+</script>

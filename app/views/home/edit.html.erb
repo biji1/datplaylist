@@ -1,0 +1,153 @@
+<div class="container-fluid">
+	<div id="edit-none">
+		<div class="row title-top4">
+			<h1>404</h1>
+			<h3>Page not found</h3>
+		</div>
+	</div>
+	<div id="edit-playlist">
+		<% @playlists.each do |item| %>
+		<div class="row title-top2">
+			<h1>Editing a playlist</h1>
+			<h3><%= localize(item.created_at, :format => :mydateformat) %></h3>
+			<h4>play/<%= item.link_id %>/0</h4>
+			<h4>code: <%=item.delete_code %></h4>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div id="alert-empty" class="alert alert-danger collapse alert-home">
+					The playlist can't be <strong>empty</strong>.
+				</div>
+				<div id="alert-incorrect" class="alert alert-danger collapse alert-home">
+					The captcha is <strong>incorrect</strong>.
+				</div>
+				<div id="alert-toobig" class="alert alert-danger collapse alert-home">
+	                One of the input form is <strong>too big</strong>.
+	            </div>
+				<!-- <div id="alert-added" class="alert alert-success collapse"> faire dans la page lists
+								The playlist has been added with <strong>success</strong>.
+				</div> -->
+				<div class="row">
+					<form id="index-form" action="edit_verify" method="POST">
+						<div class="col-md-8">
+							<div class="form-group">
+								<textarea name="area-playlist" id="area-playlist" maxlength="3000" class="form-control vresize" rows="7" placeholder="One query per line"><% item.title.split(";").each do |t| %>
+<%= t %><% end %>
+</textarea>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<div class="input-group">
+									<input name="author-playlist" type="text" class="form-control" placeholder="Author" aria-describedby="basic-addon1" value="<%= item.author %>" maxlength="100">
+									<span class="input-group-addon" id="basic-addon1">Optional</span>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group">
+									<input name="description-playlist" type="text" class="form-control" placeholder="Description" aria-describedby="basic-addon1" value="<%= item.description %>" maxlength="100">
+									<span class="input-group-addon" id="basic-addon2">Optional</span>
+								</div>
+							</div>
+							<!--<%= recaptcha_tags %>-->
+							<script src='https://www.google.com/recaptcha/api.js'></script>
+							<div class="g-recaptcha" data-sitekey="6Le2XBETAAAAAO5SKz753f1Nf9fDoJghCerynbOh"></div>
+							
+							<div class="form-group">
+								<button type="button" class="button-update btn btn-success btn-lg">Update</button>
+								<button type="button" class="button-delete btn btn-danger btn-lg" data-toggle="modal" data-target="#delete-confirm">Delete</button>
+								<!-- Modal -->
+								<div id="delete-confirm" class="modal fade" role="dialog">
+									<div class="modal-dialog">
+										<!-- Modal content-->
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal">&times;</button>
+												<h4 class="modal-title">Are you sure?</h4>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
+												<button type="button" class="button-delete2 btn btn-danger" data-dismiss="modal">Delete</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<input name="code-playlist" type="hidden" value="<%= item.delete_code %>">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<input id="submit-type" name="submit-type" type="hidden" value="">
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+	<% end %>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+
+        var playlist = {};
+
+        function getVideoIds() {
+            var lines = $("#area-playlist").val().split('\n');
+
+            lines = $.grep(lines, function(n) {
+                return (n)
+            });
+
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i]) {
+                    playlist[lines[i]] = "ok";
+                }
+            }
+        }
+
+        function checkPlaylist() {
+            if (Object.keys(playlist).length == 0)
+                return false;
+            return true;
+        }
+
+        $(".button-update").click(function(e) {
+            e.preventDefault();
+            $("#submit-type").val("update");
+            playlist = {};
+            getVideoIds();
+            if (!checkPlaylist()) {
+                $("#alert-empty").fadeTo(2000, 500).slideUp(500, function(){
+                });
+                return;
+            }
+            $("#index-form").submit();
+        });
+
+        $(".button-delete2").click(function(e) {
+            e.preventDefault();
+            $("#submit-type").val("delete");
+			$("#index-form").submit();
+		});
+
+        if (<%= @status %> == 1) {
+            $("#edit-none").css("display", "block");
+        }
+        else if (<%= @status %> == 2) {
+            $("#edit-playlist").css("display", "block");
+        }
+        else if (<%= @status %> == 5) {
+            $("#alert-toobig").fadeTo(5000, 500).slideUp(500, function(){
+            });
+        }
+
+    });
+</script>

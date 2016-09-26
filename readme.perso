@@ -1,0 +1,3 @@
+modifier les liens dans play.html.erb:
+-a href pour test en local (vm)
+-ahref + onclick js pour le vrai serveur

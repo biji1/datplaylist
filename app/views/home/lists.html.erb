@@ -1,0 +1,76 @@
+
+<div class="container-fluid">
+
+	<div class="row title-top2">
+		<h1>Public Playlists</h1>
+	</div>
+
+	<div class="playlists">
+		  <% @playlists.each do |item| %>
+		  	<div id="alert-code" class="alert alert-info collapse alert-lists">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				   <span aria-hidden="true">&times;</span>
+				</button>
+				The code of your playlist is <strong><%= @playlistcode %></strong> (datplaylist.com/play/<%= item.link_id %>/0). Copy it somewhere if you plan to edit / delete your playlist, or leave it here !
+			</div>
+			<div id="alert-updated" class="alert alert-success collapse alert-home">
+				Your playlist has been <strong>updated</strong>.
+		    </div>
+		    <div id="alert-deleted" class="alert alert-success collapse alert-home">
+		        Your playlist has been <strong>deleted</strong>.
+		    </div>
+		  <div class="row playlist">
+		  	<div class="col-md-2">
+		  		<div class="playlist-author">
+			  		<% if item.author.empty? %>
+			  			<div class="anonymous">Anonymous</div>
+			  		<% else %>
+			  			<%= item.author %>
+			  		<% end %>
+			  	</div>
+			  	<div class="playlist-date">
+			  		<%= localize(item.created_at, :format => :mydateformat) %>
+			  	</div>
+		  	</div>
+			<div class="col-md-1">
+				<div class="playlist-play">
+			  		<a href="play/<%= item.link_id %>/0">
+			  			<img src="/res/ico_play_gris.png" />
+			  		</a>
+			  	</div>
+			</div>
+			<div class="col-md-9">
+				<div class="playlist-description">
+			  		<% if item.description.empty? %>
+			  			<span class="anonymous">Playlist unnamed</span>
+			  		<% else %>
+			  			<%= item.description %>
+			  		<% end %>
+			  	</div>
+			  	<div class="playlist-titles">
+			  		<%= item.title.gsub(';', ' | ').chomp(' | ') %>
+			  	</div>
+			</div>
+
+		  </div>
+		  <% end %>
+	</div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+    	            
+		if (<%= @status %> == 3) {
+            $("#alert-code").fadeTo(5000, 500);
+        }
+
+        if (<%= @status2 %> == 2) {
+            $("#alert-updated").fadeTo(5000, 500).slideUp(500, function(){
+            });
+        }
+        else if (<%= @status2 %> == 3) {
+            $("#alert-deleted").fadeTo(5000, 500).slideUp(500, function(){
+            });
+        }
+    });
+</script>
